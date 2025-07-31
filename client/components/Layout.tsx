@@ -220,6 +220,7 @@ export default function Layout({ children }: LayoutProps) {
 
 function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
   const location = useLocation();
+  const { hasRole } = useAuth();
 
   return (
     <div className="flex flex-col h-full bg-sidebar text-sidebar-foreground">
