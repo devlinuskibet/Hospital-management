@@ -17,6 +17,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 
 // Pages
 import Login from "./pages/Login";
+import SimpleLogin from "./pages/SimpleLogin";
 import Dashboard from "./pages/Dashboard";
 import PatientRegistration from "./pages/PatientRegistration";
 import Appointments from "./pages/Appointments";
