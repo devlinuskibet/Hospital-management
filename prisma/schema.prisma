@@ -1,0 +1,529 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  role      UserRole
+  staffId   String?  @unique
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relationships
+  staff               Staff?
+  doctorAppointments  Appointment[] @relation("DoctorAppointments")
+  createdAppointments Appointment[] @relation("CreatedAppointments")
+  prescriptions       Prescription[]
+  labResults          LabResult[]
+  radiologyReports    RadiologyReport[]
+  billingRecords      BillingRecord[]
+  researchProjects    ResearchProject[]
+
+  @@map("users")
+}
+
+model Staff {
+  id          String     @id @default(uuid())
+  userId      String     @unique
+  staffId     String     @unique
+  firstName   String
+  lastName    String
+  middleName  String?
+  phone       String
+  email       String     @unique
+  department  Department
+  position    String
+  specialization String?
+  isActive    Boolean    @default(true)
+  hireDate    DateTime
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  // Relationships
+  user         User           @relation(fields: [userId], references: [id])
+  schedules    StaffSchedule[]
+  appointments Appointment[]
+
+  @@map("staff")
+}
+
+model Patient {
+  id             String    @id @default(uuid())
+  patientNumber  String    @unique
+  firstName      String
+  lastName       String
+  middleName     String?
+  dateOfBirth    DateTime
+  gender         Gender
+  phone          String
+  email          String?
+  nationalId     String    @unique
+  nhifNumber     String?
+  insuranceProvider String?
+  policyNumber   String?
+  address        String?
+  county         String
+  subCounty      String?
+  emergencyContactName  String
+  emergencyContactPhone String
+  emergencyContactRelation String?
+  bloodGroup     BloodGroup?
+  allergies      String?
+  medicalConditions String?
+  currentMedications String?
+  isActive       Boolean   @default(true)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  // Relationships
+  appointments    Appointment[]
+  prescriptions   Prescription[]
+  labRequests     LabRequest[]
+  labResults      LabResult[]
+  radiologyRequests RadiologyRequest[]
+  radiologyReports  RadiologyReport[]
+  billingRecords  BillingRecord[]
+  patientVisits   PatientVisit[]
+
+  @@map("patients")
+}
+
+model Appointment {
+  id          String            @id @default(uuid())
+  patientId   String
+  doctorId    String
+  createdBy   String
+  appointmentDate DateTime
+  appointmentTime String
+  duration    Int               @default(30) // minutes
+  type        AppointmentType
+  status      AppointmentStatus @default(SCHEDULED)
+  notes       String?
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+
+  // Relationships
+  patient   Patient @relation(fields: [patientId], references: [id])
+  doctor    User    @relation("DoctorAppointments", fields: [doctorId], references: [id])
+  createdByUser User @relation("CreatedAppointments", fields: [createdBy], references: [id])
+
+  @@map("appointments")
+}
+
+model Drug {
+  id          String   @id @default(uuid())
+  name        String
+  genericName String?
+  category    String
+  description String?
+  unitPrice   Float
+  stockQuantity Int
+  reorderLevel Int
+  expiryDate  DateTime?
+  batchNumber String?
+  manufacturer String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relationships
+  prescriptionItems PrescriptionItem[]
+  stockMovements    DrugStockMovement[]
+
+  @@map("drugs")
+}
+
+model Prescription {
+  id          String   @id @default(uuid())
+  patientId   String
+  doctorId    String
+  diagnosis   String
+  instructions String?
+  status      PrescriptionStatus @default(PENDING)
+  issuedAt    DateTime @default(now())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relationships
+  patient Patient @relation(fields: [patientId], references: [id])
+  doctor  User    @relation(fields: [doctorId], references: [id])
+  items   PrescriptionItem[]
+
+  @@map("prescriptions")
+}
+
+model PrescriptionItem {
+  id             String @id @default(uuid())
+  prescriptionId String
+  drugId         String
+  quantity       Int
+  dosage         String
+  frequency      String
+  duration       String
+
+  // Relationships
+  prescription Prescription @relation(fields: [prescriptionId], references: [id])
+  drug         Drug         @relation(fields: [drugId], references: [id])
+
+  @@map("prescription_items")
+}
+
+model DrugStockMovement {
+  id        String            @id @default(uuid())
+  drugId    String
+  type      StockMovementType
+  quantity  Int
+  reason    String?
+  createdAt DateTime          @default(now())
+
+  // Relationships
+  drug Drug @relation(fields: [drugId], references: [id])
+
+  @@map("drug_stock_movements")
+}
+
+model LabTest {
+  id          String   @id @default(uuid())
+  name        String
+  category    String
+  description String?
+  price       Float
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relationships
+  requests LabRequest[]
+  results  LabResult[]
+
+  @@map("lab_tests")
+}
+
+model LabRequest {
+  id          String           @id @default(uuid())
+  patientId   String
+  testId      String
+  requestedBy String
+  urgency     TestUrgency      @default(ROUTINE)
+  status      LabRequestStatus @default(PENDING)
+  notes       String?
+  requestedAt DateTime         @default(now())
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  // Relationships
+  patient Patient @relation(fields: [patientId], references: [id])
+  test    LabTest @relation(fields: [testId], references: [id])
+  result  LabResult?
+
+  @@map("lab_requests")
+}
+
+model LabResult {
+  id          String          @id @default(uuid())
+  requestId   String          @unique
+  testId      String
+  patientId   String
+  result      String
+  normalRange String?
+  interpretation String?
+  status      LabResultStatus @default(PENDING)
+  reviewedBy  String?
+  reviewedAt  DateTime?
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  // Relationships
+  request   LabRequest @relation(fields: [requestId], references: [id])
+  test      LabTest    @relation(fields: [testId], references: [id])
+  patient   Patient    @relation(fields: [patientId], references: [id])
+  reviewer  User?      @relation(fields: [reviewedBy], references: [id])
+
+  @@map("lab_results")
+}
+
+model RadiologyRequest {
+  id          String              @id @default(uuid())
+  patientId   String
+  examType    String
+  bodyPart    String
+  urgency     TestUrgency         @default(ROUTINE)
+  status      RadiologyRequestStatus @default(PENDING)
+  clinicalInfo String?
+  requestedBy String
+  requestedAt DateTime            @default(now())
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+
+  // Relationships
+  patient Patient           @relation(fields: [patientId], references: [id])
+  report  RadiologyReport?
+
+  @@map("radiology_requests")
+}
+
+model RadiologyReport {
+  id          String   @id @default(uuid())
+  requestId   String   @unique
+  patientId   String
+  findings    String
+  impression  String
+  recommendation String?
+  reportedBy  String
+  reportedAt  DateTime @default(now())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relationships
+  request   RadiologyRequest @relation(fields: [requestId], references: [id])
+  patient   Patient          @relation(fields: [patientId], references: [id])
+  reporter  User             @relation(fields: [reportedBy], references: [id])
+
+  @@map("radiology_reports")
+}
+
+model BillingRecord {
+  id          String        @id @default(uuid())
+  patientId   String
+  items       Json          // Array of billing items
+  totalAmount Float
+  paidAmount  Float         @default(0)
+  balance     Float
+  paymentMethod String?
+  nhifClaim   Boolean       @default(false)
+  status      BillingStatus @default(PENDING)
+  createdBy   String
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  // Relationships
+  patient   Patient @relation(fields: [patientId], references: [id])
+  createdByUser User @relation(fields: [createdBy], references: [id])
+
+  @@map("billing_records")
+}
+
+model StaffSchedule {
+  id        String   @id @default(uuid())
+  staffId   String
+  date      DateTime
+  startTime String
+  endTime   String
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relationships
+  staff Staff @relation(fields: [staffId], references: [id])
+
+  @@map("staff_schedules")
+}
+
+model InventoryItem {
+  id            String   @id @default(uuid())
+  name          String
+  category      String
+  description   String?
+  quantity      Int
+  unitPrice     Float
+  reorderLevel  Int
+  supplier      String?
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Relationships
+  movements InventoryMovement[]
+
+  @@map("inventory_items")
+}
+
+model InventoryMovement {
+  id        String            @id @default(uuid())
+  itemId    String
+  type      StockMovementType
+  quantity  Int
+  reason    String?
+  createdAt DateTime          @default(now())
+
+  // Relationships
+  item InventoryItem @relation(fields: [itemId], references: [id])
+
+  @@map("inventory_movements")
+}
+
+model ResearchProject {
+  id          String   @id @default(uuid())
+  title       String
+  description String
+  principalInvestigator String
+  status      ResearchStatus @default(PLANNING)
+  startDate   DateTime?
+  endDate     DateTime?
+  createdBy   String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relationships
+  createdByUser User @relation(fields: [createdBy], references: [id])
+
+  @@map("research_projects")
+}
+
+model PatientVisit {
+  id          String   @id @default(uuid())
+  patientId   String
+  visitType   VisitType
+  visitDate   DateTime
+  chiefComplaint String
+  diagnosis   String?
+  treatment   String?
+  followUpDate DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relationships
+  patient Patient @relation(fields: [patientId], references: [id])
+
+  @@map("patient_visits")
+}
+
+// Enums
+enum UserRole {
+  ADMIN
+  DOCTOR
+  NURSE
+  RECEPTIONIST
+  PHARMACIST
+  LAB_TECH
+  RADIOLOGIST
+  FINANCE
+  RESEARCHER
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+
+enum BloodGroup {
+  A_POSITIVE
+  A_NEGATIVE
+  B_POSITIVE
+  B_NEGATIVE
+  AB_POSITIVE
+  AB_NEGATIVE
+  O_POSITIVE
+  O_NEGATIVE
+}
+
+enum Department {
+  EMERGENCY
+  CARDIOLOGY
+  PEDIATRICS
+  SURGERY
+  MATERNITY
+  ORTHOPEDICS
+  NEUROLOGY
+  ONCOLOGY
+  RADIOLOGY
+  LABORATORY
+  PHARMACY
+  ADMINISTRATION
+  RESEARCH
+}
+
+enum AppointmentType {
+  CONSULTATION
+  FOLLOW_UP
+  PROCEDURE
+  EMERGENCY
+  ROUTINE_CHECKUP
+}
+
+enum AppointmentStatus {
+  SCHEDULED
+  CONFIRMED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+  NO_SHOW
+}
+
+enum PrescriptionStatus {
+  PENDING
+  DISPENSED
+  COMPLETED
+  CANCELLED
+}
+
+enum StockMovementType {
+  IN
+  OUT
+  ADJUSTMENT
+  EXPIRED
+  DAMAGED
+}
+
+enum TestUrgency {
+  ROUTINE
+  URGENT
+  STAT
+}
+
+enum LabRequestStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+enum LabResultStatus {
+  PENDING
+  REVIEWED
+  CRITICAL
+  ABNORMAL
+  NORMAL
+}
+
+enum RadiologyRequestStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+enum BillingStatus {
+  PENDING
+  PARTIAL_PAYMENT
+  PAID
+  OVERDUE
+  CANCELLED
+}
+
+enum ResearchStatus {
+  PLANNING
+  ACTIVE
+  COMPLETED
+  SUSPENDED
+  CANCELLED
+}
+
+enum VisitType {
+  OUTPATIENT
+  INPATIENT
+  EMERGENCY
+  FOLLOW_UP
+}
