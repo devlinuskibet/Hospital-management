@@ -1,11 +1,15 @@
+import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { 
-  Users, 
-  UserPlus, 
-  Activity, 
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Skeleton } from "@/components/ui/skeleton";
+import { api } from "@/lib/api";
+import {
+  Users,
+  UserPlus,
+  Activity,
   Calendar,
   Pill,
   TestTube,
@@ -16,7 +20,8 @@ import {
   Clock,
   CheckCircle,
   Bed,
-  Stethoscope
+  Stethoscope,
+  RefreshCw
 } from "lucide-react";
 
 export default function Dashboard() {
