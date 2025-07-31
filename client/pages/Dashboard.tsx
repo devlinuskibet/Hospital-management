@@ -69,69 +69,37 @@ export default function Dashboard() {
   const departments = departmentsData?.departments || [];
   const alerts = alertsData?.alerts || [];
 
-  const recentActivities = [
-    {
-      id: 1,
-      type: "admission",
-      patient: "Sarah Wanjiku",
-      department: "Emergency",
-      time: "5 minutes ago",
-      status: "urgent"
-    },
-    {
-      id: 2,
-      type: "discharge",
-      patient: "John Kamau",
-      department: "Cardiology",
-      time: "12 minutes ago",
-      status: "completed"
-    },
-    {
-      id: 3,
-      type: "lab_result",
-      patient: "Mary Akinyi",
-      department: "Laboratory",
-      time: "18 minutes ago",
-      status: "pending"
-    },
-    {
-      id: 4,
-      type: "surgery",
-      patient: "David Otieno",
-      department: "Surgery",
-      time: "1 hour ago",
-      status: "in_progress"
-    }
-  ];
+  const StatCard = ({ stat, icon: Icon }: { stat: any; icon: any }) => (
+    <Card>
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+        <CardTitle className="text-sm font-medium">{stat.title}</CardTitle>
+        <Icon className="h-4 w-4 text-muted-foreground" />
+      </CardHeader>
+      <CardContent>
+        <div className="text-2xl font-bold">{stat.value}</div>
+        <div className="flex items-center gap-1 text-xs text-muted-foreground">
+          {stat.changeType === 'increase' ? (
+            <TrendingUp className="h-3 w-3 text-success-600" />
+          ) : (
+            <TrendingDown className="h-3 w-3 text-danger-600" />
+          )}
+          <span className={stat.changeType === 'increase' ? 'text-success-600' : 'text-danger-600'}>
+            {stat.change}
+          </span>
+          <span>from last month</span>
+        </div>
+        <p className="text-xs text-muted-foreground mt-1">{stat.description}</p>
+      </CardContent>
+    </Card>
+  );
 
-  const departmentMetrics = [
-    { name: "Emergency", patients: 45, capacity: 60, utilization: 75 },
-    { name: "Cardiology", patients: 32, capacity: 40, utilization: 80 },
-    { name: "Pediatrics", patients: 28, capacity: 35, utilization: 80 },
-    { name: "Surgery", patients: 18, capacity: 25, utilization: 72 },
-    { name: "Maternity", patients: 22, capacity: 30, utilization: 73 }
-  ];
-
-  const alerts = [
-    {
-      id: 1,
-      type: "critical",
-      message: "ICU Bed 12 - Patient requires immediate attention",
-      time: "2 minutes ago"
-    },
-    {
-      id: 2,
-      type: "warning",
-      message: "Pharmacy inventory low - Paracetamol (< 100 units)",
-      time: "15 minutes ago"
-    },
-    {
-      id: 3,
-      type: "info",
-      message: "Lab results ready for review - 8 pending reports",
-      time: "30 minutes ago"
-    }
-  ];
+  const getIconForStat = (title: string) => {
+    if (title.includes('Patient')) return Users;
+    if (title.includes('Appointment')) return Calendar;
+    if (title.includes('Bed')) return Bed;
+    if (title.includes('Revenue')) return DollarSign;
+    return Activity;
+  };
 
   return (
     <div className="space-y-6">
