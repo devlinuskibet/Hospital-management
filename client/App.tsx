@@ -4,13 +4,19 @@ import { Toaster } from "@/components/ui/toaster";
 import { createRoot } from "react-dom/client";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-// Layout
+// API and Auth
+import { queryClient } from "./lib/api";
+import { AuthProvider, UserRole } from "./contexts/AuthContext";
+
+// Layout and Protection
 import Layout from "./components/Layout";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 // Pages
+import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import PatientRegistration from "./pages/PatientRegistration";
 import Appointments from "./pages/Appointments";
@@ -21,8 +27,6 @@ import NotFound from "./pages/NotFound";
 // Placeholder imports for other modules
 import PlaceholderPage from "./components/PlaceholderPage";
 import { Camera, DollarSign, UserCheck, Package, GraduationCap } from "lucide-react";
-
-const queryClient = new QueryClient();
 
 // Placeholder page components
 const Radiology = () => (
