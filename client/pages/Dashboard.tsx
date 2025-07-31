@@ -139,16 +139,29 @@ export default function Dashboard() {
       )}
 
       {/* Critical Alerts */}
-      {alerts.length > 0 && (
+      {alertsLoading ? (
+        <Card>
+          <CardHeader>
+            <Skeleton className="h-6 w-32" />
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              {[1, 2, 3].map((i) => (
+                <Skeleton key={i} className="h-12 w-full" />
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      ) : alerts.length > 0 && (
         <Card className="border-warning-200 bg-warning-50">
           <CardHeader className="pb-3">
             <CardTitle className="text-warning-800 flex items-center gap-2">
               <AlertTriangle className="h-5 w-5" />
-              Critical Alerts
+              Critical Alerts ({alerts.length})
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
-            {alerts.map((alert) => (
+            {alerts.map((alert: any) => (
               <div key={alert.id} className="flex items-center justify-between p-3 bg-white rounded-lg border">
                 <div className="flex items-center gap-3">
                   <div className={`h-2 w-2 rounded-full ${
