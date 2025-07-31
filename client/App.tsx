@@ -160,7 +160,7 @@ const App = () => (
                       path="/appointments"
                       element={
                         <ProtectedRoute permissions={["appointments.read"]}>
-                          <Appointments />
+                          <AppointmentsPage />
                         </ProtectedRoute>
                       }
                     />
