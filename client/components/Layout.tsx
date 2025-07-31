@@ -29,16 +29,66 @@ import {
 } from "lucide-react";
 
 const navigation = [
-  { name: "Dashboard", href: "/", icon: BarChart3 },
-  { name: "Patients", href: "/patients", icon: Users },
-  { name: "Appointments", href: "/appointments", icon: Calendar },
-  { name: "Pharmacy", href: "/pharmacy", icon: Pill },
-  { name: "Laboratory", href: "/laboratory", icon: TestTube },
-  { name: "Radiology", href: "/radiology", icon: Camera },
-  { name: "Billing", href: "/billing", icon: DollarSign },
-  { name: "Staff", href: "/staff", icon: UserCheck },
-  { name: "Inventory", href: "/inventory", icon: Package },
-  { name: "Research", href: "/research", icon: GraduationCap },
+  {
+    name: "Dashboard",
+    href: "/",
+    icon: BarChart3,
+    roles: [UserRole.ADMIN, UserRole.DOCTOR, UserRole.NURSE, UserRole.RECEPTIONIST, UserRole.PHARMACIST, UserRole.LAB_TECH, UserRole.RADIOLOGIST, UserRole.FINANCE, UserRole.RESEARCHER]
+  },
+  {
+    name: "Patients",
+    href: "/patients",
+    icon: Users,
+    roles: [UserRole.ADMIN, UserRole.DOCTOR, UserRole.NURSE, UserRole.RECEPTIONIST, UserRole.PHARMACIST, UserRole.LAB_TECH, UserRole.RADIOLOGIST, UserRole.FINANCE]
+  },
+  {
+    name: "Appointments",
+    href: "/appointments",
+    icon: Calendar,
+    roles: [UserRole.ADMIN, UserRole.DOCTOR, UserRole.NURSE, UserRole.RECEPTIONIST]
+  },
+  {
+    name: "Pharmacy",
+    href: "/pharmacy",
+    icon: Pill,
+    roles: [UserRole.ADMIN, UserRole.DOCTOR, UserRole.PHARMACIST]
+  },
+  {
+    name: "Laboratory",
+    href: "/laboratory",
+    icon: TestTube,
+    roles: [UserRole.ADMIN, UserRole.DOCTOR, UserRole.LAB_TECH]
+  },
+  {
+    name: "Radiology",
+    href: "/radiology",
+    icon: Camera,
+    roles: [UserRole.ADMIN, UserRole.DOCTOR, UserRole.RADIOLOGIST]
+  },
+  {
+    name: "Billing",
+    href: "/billing",
+    icon: DollarSign,
+    roles: [UserRole.ADMIN, UserRole.FINANCE, UserRole.RECEPTIONIST]
+  },
+  {
+    name: "Staff",
+    href: "/staff",
+    icon: UserCheck,
+    roles: [UserRole.ADMIN]
+  },
+  {
+    name: "Inventory",
+    href: "/inventory",
+    icon: Package,
+    roles: [UserRole.ADMIN, UserRole.PHARMACIST]
+  },
+  {
+    name: "Research",
+    href: "/research",
+    icon: GraduationCap,
+    roles: [UserRole.ADMIN, UserRole.DOCTOR, UserRole.RESEARCHER]
+  },
 ];
 
 interface LayoutProps {
