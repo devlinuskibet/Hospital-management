@@ -9,6 +9,7 @@ import { handleDemo } from "./routes/demo";
 import authRoutes from "./routes/auth";
 import patientRoutes from "./routes/patients";
 import dashboardRoutes from "./routes/dashboard";
+import appointmentRoutes from "./routes/appointments";
 
 export function createServer() {
   const app = express();
