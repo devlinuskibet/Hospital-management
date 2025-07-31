@@ -314,11 +314,15 @@ async function main() {
   ];
 
   for (const itemData of inventoryItems) {
-    await prisma.inventoryItem.upsert({
-      where: { name: itemData.name },
-      update: {},
-      create: itemData
+    const existingItem = await prisma.inventoryItem.findFirst({
+      where: { name: itemData.name }
     });
+
+    if (!existingItem) {
+      await prisma.inventoryItem.create({
+        data: itemData
+      });
+    }
   }
 
   console.log('✅ Database seeding completed!');
