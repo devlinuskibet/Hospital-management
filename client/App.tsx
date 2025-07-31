@@ -21,6 +21,7 @@ import SimpleLogin from "./pages/SimpleLogin";
 import Dashboard from "./pages/Dashboard";
 import PatientRegistration from "./pages/PatientRegistration";
 import Appointments from "./pages/Appointments";
+import AppointmentsPage from "./pages/AppointmentsPage";
 import Pharmacy from "./pages/Pharmacy";
 import Laboratory from "./pages/Laboratory";
 import NotFound from "./pages/NotFound";
