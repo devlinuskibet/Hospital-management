@@ -6,10 +6,124 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Index from "./pages/Index";
+
+// Layout
+import Layout from "./components/Layout";
+
+// Pages
+import Dashboard from "./pages/Dashboard";
+import PatientRegistration from "./pages/PatientRegistration";
+import Appointments from "./pages/Appointments";
+import Pharmacy from "./pages/Pharmacy";
+import Laboratory from "./pages/Laboratory";
 import NotFound from "./pages/NotFound";
 
+// Placeholder imports for other modules
+import PlaceholderPage from "./components/PlaceholderPage";
+import { Camera, DollarSign, UserCheck, Package, GraduationCap } from "lucide-react";
+
 const queryClient = new QueryClient();
+
+// Placeholder page components
+const Radiology = () => (
+  <PlaceholderPage
+    title="Radiology Services"
+    description="Medical imaging and diagnostic radiology management system"
+    icon={Camera}
+    features={[
+      "Imaging request and scheduling",
+      "DICOM/PACS integration",
+      "Radiologist reporting workflow",
+      "Image storage and archival",
+      "Critical finding alerts",
+      "Integration with patient records",
+      "Imaging equipment management",
+      "Radiology billing and claims",
+      "Teleradiology capabilities",
+      "Quality assurance protocols"
+    ]}
+  />
+);
+
+const Billing = () => (
+  <PlaceholderPage
+    title="Billing & Finance"
+    description="Comprehensive billing, invoicing, and financial management system"
+    icon={DollarSign}
+    features={[
+      "Automated service billing",
+      "NHIF and insurance claims processing",
+      "Invoice generation and management",
+      "Payment processing and receipts",
+      "Financial reporting and analytics",
+      "Debt management and follow-up",
+      "Multi-currency support",
+      "Audit trails and compliance",
+      "Revenue cycle management",
+      "Integration with accounting systems"
+    ]}
+  />
+);
+
+const Staff = () => (
+  <PlaceholderPage
+    title="Human Resources"
+    description="Staff management, scheduling, and human resource operations"
+    icon={UserCheck}
+    features={[
+      "Employee records and profiles",
+      "Duty roster and shift scheduling",
+      "Leave management and approvals",
+      "Payroll integration",
+      "Performance evaluation",
+      "Training and development tracking",
+      "Compliance and certification management",
+      "Attendance and time tracking",
+      "Staff communication portal",
+      "HR analytics and reporting"
+    ]}
+  />
+);
+
+const Inventory = () => (
+  <PlaceholderPage
+    title="Inventory & Procurement"
+    description="Medical and non-medical supply chain management system"
+    icon={Package}
+    features={[
+      "Medical supply inventory tracking",
+      "Automated reorder points and alerts",
+      "Purchase order generation",
+      "Vendor management and evaluation",
+      "Receiving and quality checks",
+      "Asset management and tracking",
+      "Cost analysis and budgeting",
+      "Equipment maintenance scheduling",
+      "Compliance and regulatory tracking",
+      "Supply chain analytics"
+    ]}
+  />
+);
+
+const Research = () => (
+  <PlaceholderPage
+    title="Research & Academic"
+    description="Clinical research, teaching, and academic program management"
+    icon={GraduationCap}
+    features={[
+      "Clinical trial data capture",
+      "Research protocol management",
+      "Ethics committee workflow",
+      "Student rotation scheduling",
+      "Teaching hospital coordination",
+      "Publication and thesis tracking",
+      "Research participant management",
+      "Data analysis and reporting",
+      "Grant and funding management",
+      "Academic collaboration tools"
+    ]}
+  />
+);
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -17,11 +131,21 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+        <Layout>
+          <Routes>
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/patients" element={<PatientRegistration />} />
+            <Route path="/appointments" element={<Appointments />} />
+            <Route path="/pharmacy" element={<Pharmacy />} />
+            <Route path="/laboratory" element={<Laboratory />} />
+            <Route path="/radiology" element={<Radiology />} />
+            <Route path="/billing" element={<Billing />} />
+            <Route path="/staff" element={<Staff />} />
+            <Route path="/inventory" element={<Inventory />} />
+            <Route path="/research" element={<Research />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </Layout>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
