@@ -271,11 +271,15 @@ async function main() {
   ];
 
   for (const testData of labTests) {
-    await prisma.labTest.upsert({
-      where: { name: testData.name },
-      update: {},
-      create: testData
+    const existingTest = await prisma.labTest.findFirst({
+      where: { name: testData.name }
     });
+
+    if (!existingTest) {
+      await prisma.labTest.create({
+        data: testData
+      });
+    }
   }
 
   // Create sample inventory items
