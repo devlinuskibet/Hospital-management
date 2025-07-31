@@ -25,40 +25,49 @@ import {
 } from "lucide-react";
 
 export default function Dashboard() {
-  const stats = [
-    {
-      title: "Total Patients",
-      value: "12,847",
-      change: "+12%",
-      changeType: "increase" as const,
-      icon: Users,
-      description: "Active patient records"
-    },
-    {
-      title: "Today's Appointments",
-      value: "156",
-      change: "+8%",
-      changeType: "increase" as const,
-      icon: Calendar,
-      description: "Scheduled for today"
-    },
-    {
-      title: "Bed Occupancy",
-      value: "87%",
-      change: "-2%",
-      changeType: "decrease" as const,
-      icon: Bed,
-      description: "267 of 307 beds occupied"
-    },
-    {
-      title: "Revenue (Month)",
-      value: "KSh 24.5M",
-      change: "+15%",
-      changeType: "increase" as const,
-      icon: DollarSign,
-      description: "Total collections this month"
-    }
-  ];
+  // Fetch dashboard data using React Query
+  const {
+    data: statsData,
+    isLoading: statsLoading,
+    error: statsError,
+    refetch: refetchStats
+  } = useQuery({
+    queryKey: ['dashboard', 'stats'],
+    queryFn: () => api.dashboard.stats(),
+    refetchInterval: 30000, // Refetch every 30 seconds
+  });
+
+  const {
+    data: activitiesData,
+    isLoading: activitiesLoading
+  } = useQuery({
+    queryKey: ['dashboard', 'activities'],
+    queryFn: () => api.dashboard.activities(),
+    refetchInterval: 10000, // Refetch every 10 seconds
+  });
+
+  const {
+    data: departmentsData,
+    isLoading: departmentsLoading
+  } = useQuery({
+    queryKey: ['dashboard', 'departments'],
+    queryFn: () => api.dashboard.departments(),
+    refetchInterval: 60000, // Refetch every minute
+  });
+
+  const {
+    data: alertsData,
+    isLoading: alertsLoading
+  } = useQuery({
+    queryKey: ['dashboard', 'alerts'],
+    queryFn: () => api.dashboard.alerts(),
+    refetchInterval: 5000, // Refetch every 5 seconds for critical alerts
+  });
+
+  const stats = statsData?.stats || [];
+  const activities = activitiesData?.activities || [];
+  const departments = departmentsData?.departments || [];
+  const alerts = alertsData?.alerts || [];
 
   const recentActivities = [
     {
