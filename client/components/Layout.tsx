@@ -98,6 +98,7 @@ interface LayoutProps {
 export default function Layout({ children }: LayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
+  const { user, logout, hasRole } = useAuth();
 
   return (
     <div className="min-h-screen bg-background">
