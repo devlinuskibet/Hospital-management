@@ -56,6 +56,7 @@ export function createServer() {
   app.use("/api/auth", authLimiter, authRoutes);
   app.use("/api/patients", patientRoutes);
   app.use("/api/dashboard", dashboardRoutes);
+  app.use("/api/appointments", appointmentRoutes);
 
   // Legacy demo route
   app.get("/api/demo", handleDemo);
