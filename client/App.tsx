@@ -131,27 +131,102 @@ const Research = () => (
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Layout>
+    <AuthProvider>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
           <Routes>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/patients" element={<PatientRegistration />} />
-            <Route path="/appointments" element={<Appointments />} />
-            <Route path="/pharmacy" element={<Pharmacy />} />
-            <Route path="/laboratory" element={<Laboratory />} />
-            <Route path="/radiology" element={<Radiology />} />
-            <Route path="/billing" element={<Billing />} />
-            <Route path="/staff" element={<Staff />} />
-            <Route path="/inventory" element={<Inventory />} />
-            <Route path="/research" element={<Research />} />
-            <Route path="*" element={<NotFound />} />
+            {/* Public routes */}
+            <Route path="/login" element={<Login />} />
+
+            {/* Protected routes */}
+            <Route path="/*" element={
+              <ProtectedRoute>
+                <Layout>
+                  <Routes>
+                    <Route path="/" element={<Dashboard />} />
+                    <Route
+                      path="/patients"
+                      element={
+                        <ProtectedRoute permissions={["patients.read"]}>
+                          <PatientRegistration />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/appointments"
+                      element={
+                        <ProtectedRoute permissions={["appointments.read"]}>
+                          <Appointments />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/pharmacy"
+                      element={
+                        <ProtectedRoute roles={[UserRole.ADMIN, UserRole.PHARMACIST, UserRole.DOCTOR]}>
+                          <Pharmacy />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/laboratory"
+                      element={
+                        <ProtectedRoute roles={[UserRole.ADMIN, UserRole.LAB_TECH, UserRole.DOCTOR]}>
+                          <Laboratory />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/radiology"
+                      element={
+                        <ProtectedRoute roles={[UserRole.ADMIN, UserRole.RADIOLOGIST, UserRole.DOCTOR]}>
+                          <Radiology />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/billing"
+                      element={
+                        <ProtectedRoute permissions={["billing.read"]}>
+                          <Billing />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/staff"
+                      element={
+                        <ProtectedRoute roles={[UserRole.ADMIN]}>
+                          <Staff />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/inventory"
+                      element={
+                        <ProtectedRoute roles={[UserRole.ADMIN, UserRole.PHARMACIST]}>
+                          <Inventory />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/research"
+                      element={
+                        <ProtectedRoute roles={[UserRole.ADMIN, UserRole.RESEARCHER, UserRole.DOCTOR]}>
+                          <Research />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route path="*" element={<NotFound />} />
+                  </Routes>
+                </Layout>
+              </ProtectedRoute>
+            } />
           </Routes>
-        </Layout>
-      </BrowserRouter>
-    </TooltipProvider>
+        </BrowserRouter>
+      </TooltipProvider>
+    </AuthProvider>
   </QueryClientProvider>
 );
 
