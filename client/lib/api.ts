@@ -142,6 +142,38 @@ export const api = {
       apiClient.get('/dashboard/alerts'),
   },
 
+  // Appointments
+  appointments: {
+    list: (params?: { page?: number; limit?: number; search?: string; status?: string; date?: string; doctorId?: string; patientId?: string }) =>
+      apiClient.get(`/appointments?${new URLSearchParams(params as any).toString()}`),
+    get: (id: string) =>
+      apiClient.get(`/appointments/${id}`),
+    create: (data: any) =>
+      apiClient.post('/appointments', data),
+    update: (id: string, data: any) =>
+      apiClient.put(`/appointments/${id}`, data),
+    cancel: (id: string, data?: { reason?: string }) =>
+      apiClient.patch(`/appointments/${id}/cancel`, data),
+    availability: (doctorId: string, date: string) =>
+      apiClient.get(`/appointments/availability/${doctorId}/${date}`),
+    stats: () =>
+      apiClient.get('/appointments/stats/overview'),
+  },
+
+  // Staff
+  staff: {
+    doctors: () =>
+      apiClient.get('/staff/doctors'),
+    list: (params?: { page?: number; limit?: number; department?: string; role?: string }) =>
+      apiClient.get(`/staff?${new URLSearchParams(params as any).toString()}`),
+    get: (id: string) =>
+      apiClient.get(`/staff/${id}`),
+    create: (data: any) =>
+      apiClient.post('/staff', data),
+    update: (id: string, data: any) =>
+      apiClient.put(`/staff/${id}`, data),
+  },
+
   // Health check
   health: () =>
     apiClient.get('/health'),
