@@ -138,16 +138,73 @@ export default function Layout({ children }: LayoutProps) {
               </div>
             </div>
             <div className="flex items-center gap-4">
-              <Button size="sm" className="gap-2">
-                <Plus className="h-4 w-4" />
-                Quick Action
-              </Button>
-              <div className="flex items-center gap-2">
-                <div className="h-8 w-8 bg-primary/10 rounded-full flex items-center justify-center">
-                  <Stethoscope className="h-4 w-4 text-primary" />
-                </div>
-                <span className="text-sm font-medium">Dr. Admin</span>
-              </div>
+              <ProtectedComponent permissions={["patients.write"]}>
+                <Button size="sm" className="gap-2" asChild>
+                  <Link to="/patients">
+                    <Plus className="h-4 w-4" />
+                    New Patient
+                  </Link>
+                </Button>
+              </ProtectedComponent>
+
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="flex items-center gap-2">
+                    <div className="h-8 w-8 bg-primary/10 rounded-full flex items-center justify-center">
+                      <User className="h-4 w-4 text-primary" />
+                    </div>
+                    <div className="hidden sm:block text-left">
+                      <div className="text-sm font-medium">
+                        {user?.staff ? `${user.staff.firstName} ${user.staff.lastName}` : user?.email}
+                      </div>
+                      <div className="text-xs text-muted-foreground">
+                        {user?.staff?.position || user?.role}
+                      </div>
+                    </div>
+                    <ChevronDown className="h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                  <DropdownMenuLabel>
+                    <div className="space-y-1">
+                      <p className="text-sm font-medium">
+                        {user?.staff ? `${user.staff.firstName} ${user.staff.lastName}` : 'User'}
+                      </p>
+                      <div className="flex items-center gap-2">
+                        <Badge variant="secondary" className="text-xs">
+                          {user?.role}
+                        </Badge>
+                        {user?.staffId && (
+                          <span className="text-xs text-muted-foreground">
+                            ID: {user.staffId}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem asChild>
+                    <Link to="/profile" className="flex items-center gap-2">
+                      <User className="h-4 w-4" />
+                      Profile
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link to="/settings" className="flex items-center gap-2">
+                      <Settings className="h-4 w-4" />
+                      Settings
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    onClick={logout}
+                    className="flex items-center gap-2 text-destructive focus:text-destructive"
+                  >
+                    <LogOut className="h-4 w-4" />
+                    Logout
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
         </header>
