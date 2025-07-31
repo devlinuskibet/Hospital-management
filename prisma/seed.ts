@@ -231,11 +231,15 @@ async function main() {
   ];
 
   for (const drugData of drugs) {
-    await prisma.drug.upsert({
-      where: { name: drugData.name },
-      update: {},
-      create: drugData
+    const existingDrug = await prisma.drug.findFirst({
+      where: { name: drugData.name }
     });
+
+    if (!existingDrug) {
+      await prisma.drug.create({
+        data: drugData
+      });
+    }
   }
 
   // Create sample lab tests
