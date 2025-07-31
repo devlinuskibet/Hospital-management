@@ -139,7 +139,7 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             {/* Public routes */}
-            <Route path="/login" element={<Login />} />
+            <Route path="/login" element={<SimpleLogin />} />
 
             {/* Protected routes */}
             <Route path="/*" element={
