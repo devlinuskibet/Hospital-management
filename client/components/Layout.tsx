@@ -2,11 +2,14 @@ import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { 
-  Activity, 
-  Calendar, 
-  Users, 
-  Pill, 
+import { Badge } from "@/components/ui/badge";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { useAuth, UserRole, ProtectedComponent } from "@/contexts/AuthContext";
+import {
+  Activity,
+  Calendar,
+  Users,
+  Pill,
   TestTube,
   Camera,
   DollarSign,
@@ -18,7 +21,11 @@ import {
   X,
   Heart,
   Stethoscope,
-  Plus
+  Plus,
+  LogOut,
+  User,
+  Settings,
+  ChevronDown
 } from "lucide-react";
 
 const navigation = [
