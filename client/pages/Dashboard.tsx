@@ -213,20 +213,33 @@ export default function Dashboard() {
             <CardDescription>Current patient load by department</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            {departmentMetrics.map((dept) => (
-              <div key={dept.name} className="space-y-2">
-                <div className="flex items-center justify-between text-sm">
-                  <span className="font-medium">{dept.name}</span>
-                  <span className="text-muted-foreground">
-                    {dept.patients}/{dept.capacity} patients
-                  </span>
+            {departmentsLoading ? (
+              Array.from({ length: 5 }).map((_, i) => (
+                <div key={i} className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <Skeleton className="h-4 w-20" />
+                    <Skeleton className="h-4 w-16" />
+                  </div>
+                  <Skeleton className="h-2 w-full" />
+                  <Skeleton className="h-3 w-12 ml-auto" />
                 </div>
-                <Progress value={dept.utilization} className="h-2" />
-                <div className="text-right text-xs text-muted-foreground">
-                  {dept.utilization}% capacity
+              ))
+            ) : (
+              departments.map((dept: any) => (
+                <div key={dept.name} className="space-y-2">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="font-medium">{dept.name}</span>
+                    <span className="text-muted-foreground">
+                      {dept.patients}/{dept.capacity} patients
+                    </span>
+                  </div>
+                  <Progress value={dept.utilization} className="h-2" />
+                  <div className="text-right text-xs text-muted-foreground">
+                    {dept.utilization}% capacity
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))
+            )}
           </CardContent>
         </Card>
 
@@ -237,34 +250,49 @@ export default function Dashboard() {
             <CardDescription>Latest patient activities and updates</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            {recentActivities.map((activity) => (
-              <div key={activity.id} className="flex items-center gap-4 p-3 border rounded-lg">
-                <div className="flex-shrink-0">
-                  {activity.type === 'admission' && <UserPlus className="h-4 w-4 text-medical-600" />}
-                  {activity.type === 'discharge' && <CheckCircle className="h-4 w-4 text-success-600" />}
-                  {activity.type === 'lab_result' && <TestTube className="h-4 w-4 text-warning-600" />}
-                  {activity.type === 'surgery' && <Stethoscope className="h-4 w-4 text-primary" />}
+            {activitiesLoading ? (
+              Array.from({ length: 4 }).map((_, i) => (
+                <div key={i} className="flex items-center gap-4 p-3 border rounded-lg">
+                  <Skeleton className="h-4 w-4 rounded" />
+                  <div className="flex-1 space-y-1">
+                    <Skeleton className="h-4 w-32" />
+                    <Skeleton className="h-3 w-24" />
+                  </div>
+                  <Skeleton className="h-6 w-16" />
                 </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-foreground">
-                    {activity.patient}
-                  </p>
-                  <p className="text-xs text-muted-foreground">
-                    {activity.department} • {activity.time}
-                  </p>
+              ))
+            ) : (
+              activities.map((activity: any) => (
+                <div key={activity.id} className="flex items-center gap-4 p-3 border rounded-lg">
+                  <div className="flex-shrink-0">
+                    {activity.type === 'appointment' && <Calendar className="h-4 w-4 text-medical-600" />}
+                    {activity.type === 'admission' && <UserPlus className="h-4 w-4 text-medical-600" />}
+                    {activity.type === 'discharge' && <CheckCircle className="h-4 w-4 text-success-600" />}
+                    {activity.type === 'lab_result' && <TestTube className="h-4 w-4 text-warning-600" />}
+                    {activity.type === 'prescription' && <Pill className="h-4 w-4 text-primary" />}
+                    {activity.type === 'surgery' && <Stethoscope className="h-4 w-4 text-primary" />}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-foreground">
+                      {activity.patient}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {activity.department} • {activity.time}
+                    </p>
+                  </div>
+                  <Badge
+                    variant={
+                      activity.status === 'urgent' || activity.status === 'critical' ? 'destructive' :
+                      activity.status === 'completed' || activity.status === 'scheduled' ? 'default' :
+                      activity.status === 'in_progress' ? 'secondary' :
+                      'outline'
+                    }
+                  >
+                    {activity.status.replace('_', ' ')}
+                  </Badge>
                 </div>
-                <Badge 
-                  variant={
-                    activity.status === 'urgent' ? 'destructive' :
-                    activity.status === 'completed' ? 'default' :
-                    activity.status === 'in_progress' ? 'secondary' :
-                    'outline'
-                  }
-                >
-                  {activity.status.replace('_', ' ')}
-                </Badge>
-              </div>
-            ))}
+              ))
+            )}
           </CardContent>
         </Card>
       </div>
