@@ -116,12 +116,27 @@ export default function Dashboard() {
             <Activity className="h-3 w-3" />
             System Online
           </Badge>
-          <Button className="gap-2">
-            <UserPlus className="h-4 w-4" />
-            New Patient
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => refetchStats()}
+            className="gap-2"
+          >
+            <RefreshCw className="h-4 w-4" />
+            Refresh
           </Button>
         </div>
       </div>
+
+      {/* Error State */}
+      {statsError && (
+        <Alert variant="destructive">
+          <AlertTriangle className="h-4 w-4" />
+          <AlertDescription>
+            Failed to load dashboard data. Please try refreshing the page.
+          </AlertDescription>
+        </Alert>
+      )}
 
       {/* Critical Alerts */}
       {alerts.length > 0 && (
