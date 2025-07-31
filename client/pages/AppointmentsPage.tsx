@@ -1,23 +1,54 @@
-import { useState } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Badge } from '@/components/ui/badge';
-import { Calendar } from '@/components/ui/calendar';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Skeleton } from '@/components/ui/skeleton';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Textarea } from '@/components/ui/textarea';
-import { cn } from '@/lib/utils';
-import { api } from '@/lib/api';
-import { toast } from 'sonner';
-import { format } from 'date-fns';
+import { useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Textarea } from "@/components/ui/textarea";
+import { cn } from "@/lib/utils";
+import { api } from "@/lib/api";
+import { toast } from "sonner";
+import { format } from "date-fns";
 import {
   Calendar as CalendarIcon,
   Clock,
@@ -31,48 +62,52 @@ import {
   CheckCircle,
   AlertCircle,
   Phone,
-  Stethoscope
-} from 'lucide-react';
+  Stethoscope,
+} from "lucide-react";
 
 export default function AppointmentsPage() {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
-  const [searchQuery, setSearchQuery] = useState('');
-  const [statusFilter, setStatusFilter] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
   const [isNewAppointmentOpen, setIsNewAppointmentOpen] = useState(false);
   const [editingAppointment, setEditingAppointment] = useState<any>(null);
-  
+
   const queryClient = useQueryClient();
 
   // Fetch appointments
-  const { 
-    data: appointmentsData, 
+  const {
+    data: appointmentsData,
     isLoading: appointmentsLoading,
-    error: appointmentsError 
+    error: appointmentsError,
   } = useQuery({
-    queryKey: ['appointments', { 
-      page: 1, 
-      date: format(selectedDate, 'yyyy-MM-dd'),
-      search: searchQuery,
-      status: statusFilter 
-    }],
-    queryFn: () => api.appointments.list({
-      page: 1,
-      limit: 20,
-      date: format(selectedDate, 'yyyy-MM-dd'),
-      ...(searchQuery && { search: searchQuery }),
-      ...(statusFilter && { status: statusFilter })
-    }),
+    queryKey: [
+      "appointments",
+      {
+        page: 1,
+        date: format(selectedDate, "yyyy-MM-dd"),
+        search: searchQuery,
+        status: statusFilter,
+      },
+    ],
+    queryFn: () =>
+      api.appointments.list({
+        page: 1,
+        limit: 20,
+        date: format(selectedDate, "yyyy-MM-dd"),
+        ...(searchQuery && { search: searchQuery }),
+        ...(statusFilter && { status: statusFilter }),
+      }),
   });
 
   // Fetch appointment statistics
   const { data: statsData } = useQuery({
-    queryKey: ['appointments', 'stats'],
+    queryKey: ["appointments", "stats"],
     queryFn: () => api.appointments.stats(),
   });
 
   // Fetch doctors for appointment creation
   const { data: doctorsData } = useQuery({
-    queryKey: ['staff', 'doctors'],
+    queryKey: ["staff", "doctors"],
     queryFn: () => api.staff.doctors(),
   });
 
@@ -80,39 +115,39 @@ export default function AppointmentsPage() {
   const createAppointmentMutation = useMutation({
     mutationFn: (data: any) => api.appointments.create(data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['appointments'] });
+      queryClient.invalidateQueries({ queryKey: ["appointments"] });
       setIsNewAppointmentOpen(false);
-      toast.success('Appointment created successfully');
+      toast.success("Appointment created successfully");
     },
     onError: (error: any) => {
-      toast.error(error.message || 'Failed to create appointment');
-    }
+      toast.error(error.message || "Failed to create appointment");
+    },
   });
 
   // Update appointment mutation
   const updateAppointmentMutation = useMutation({
     mutationFn: ({ id, ...data }: any) => api.appointments.update(id, data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['appointments'] });
+      queryClient.invalidateQueries({ queryKey: ["appointments"] });
       setEditingAppointment(null);
-      toast.success('Appointment updated successfully');
+      toast.success("Appointment updated successfully");
     },
     onError: (error: any) => {
-      toast.error(error.message || 'Failed to update appointment');
-    }
+      toast.error(error.message || "Failed to update appointment");
+    },
   });
 
   // Cancel appointment mutation
   const cancelAppointmentMutation = useMutation({
-    mutationFn: ({ id, reason }: { id: string; reason?: string }) => 
+    mutationFn: ({ id, reason }: { id: string; reason?: string }) =>
       api.appointments.cancel(id, { reason }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['appointments'] });
-      toast.success('Appointment cancelled');
+      queryClient.invalidateQueries({ queryKey: ["appointments"] });
+      toast.success("Appointment cancelled");
     },
     onError: (error: any) => {
-      toast.error(error.message || 'Failed to cancel appointment');
-    }
+      toast.error(error.message || "Failed to cancel appointment");
+    },
   });
 
   const appointments = appointmentsData?.appointments || [];
@@ -121,29 +156,29 @@ export default function AppointmentsPage() {
 
   const getStatusBadge = (status: string) => {
     const variants = {
-      SCHEDULED: 'default',
-      CONFIRMED: 'secondary',
-      IN_PROGRESS: 'outline',
-      COMPLETED: 'default',
-      CANCELLED: 'destructive',
-      NO_SHOW: 'destructive'
+      SCHEDULED: "default",
+      CONFIRMED: "secondary",
+      IN_PROGRESS: "outline",
+      COMPLETED: "default",
+      CANCELLED: "destructive",
+      NO_SHOW: "destructive",
     };
-    
+
     return (
-      <Badge variant={variants[status as keyof typeof variants] || 'outline'}>
-        {status.replace('_', ' ')}
+      <Badge variant={variants[status as keyof typeof variants] || "outline"}>
+        {status.replace("_", " ")}
       </Badge>
     );
   };
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case 'COMPLETED':
+      case "COMPLETED":
         return <CheckCircle className="h-4 w-4 text-success-600" />;
-      case 'CANCELLED':
-      case 'NO_SHOW':
+      case "CANCELLED":
+      case "NO_SHOW":
         return <X className="h-4 w-4 text-danger-600" />;
-      case 'IN_PROGRESS':
+      case "IN_PROGRESS":
         return <Clock className="h-4 w-4 text-warning-600" />;
       default:
         return <CalendarIcon className="h-4 w-4 text-medical-600" />;
@@ -161,7 +196,10 @@ export default function AppointmentsPage() {
           </p>
         </div>
         <div className="flex items-center gap-3">
-          <Button className="gap-2" onClick={() => setIsNewAppointmentOpen(true)}>
+          <Button
+            className="gap-2"
+            onClick={() => setIsNewAppointmentOpen(true)}
+          >
             <Plus className="h-4 w-4" />
             New Appointment
           </Button>
@@ -182,20 +220,26 @@ export default function AppointmentsPage() {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">Today's Appointments</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Today's Appointments
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.todayAppointments || 0}</div>
+            <div className="text-2xl font-bold">
+              {stats.todayAppointments || 0}
+            </div>
             <p className="text-xs text-muted-foreground">Scheduled for today</p>
           </CardContent>
         </Card>
-        
+
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium">This Week</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.weekAppointments || 0}</div>
+            <div className="text-2xl font-bold">
+              {stats.weekAppointments || 0}
+            </div>
             <p className="text-xs text-muted-foreground">Total this week</p>
           </CardContent>
         </Card>
@@ -205,18 +249,28 @@ export default function AppointmentsPage() {
             <CardTitle className="text-sm font-medium">Pending</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.pendingAppointments || 0}</div>
-            <p className="text-xs text-muted-foreground">Awaiting confirmation</p>
+            <div className="text-2xl font-bold">
+              {stats.pendingAppointments || 0}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Awaiting confirmation
+            </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">Completion Rate</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Completion Rate
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.completionRate || 0}%</div>
-            <p className="text-xs text-muted-foreground">Appointments completed</p>
+            <div className="text-2xl font-bold">
+              {stats.completionRate || 0}%
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Appointments completed
+            </p>
           </CardContent>
         </Card>
       </div>
@@ -244,12 +298,15 @@ export default function AppointmentsPage() {
                 />
               </div>
             </div>
-            
+
             <div className="flex-1">
               <Label>Date</Label>
               <Popover>
                 <PopoverTrigger asChild>
-                  <Button variant="outline" className="w-full justify-start text-left font-normal">
+                  <Button
+                    variant="outline"
+                    className="w-full justify-start text-left font-normal"
+                  >
                     <CalendarIcon className="mr-2 h-4 w-4" />
                     {format(selectedDate, "PPP")}
                   </Button>
@@ -288,9 +345,12 @@ export default function AppointmentsPage() {
       {/* Appointments Table */}
       <Card>
         <CardHeader>
-          <CardTitle>Appointments for {format(selectedDate, "MMMM d, yyyy")}</CardTitle>
+          <CardTitle>
+            Appointments for {format(selectedDate, "MMMM d, yyyy")}
+          </CardTitle>
           <CardDescription>
-            {appointments.length} appointment{appointments.length !== 1 ? 's' : ''} found
+            {appointments.length} appointment
+            {appointments.length !== 1 ? "s" : ""} found
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -338,7 +398,8 @@ export default function AppointmentsPage() {
                     <TableCell>
                       <div>
                         <div className="font-medium">
-                          {appointment.patient.firstName} {appointment.patient.lastName}
+                          {appointment.patient.firstName}{" "}
+                          {appointment.patient.lastName}
                         </div>
                         <div className="text-sm text-muted-foreground">
                           {appointment.patient.patientNumber}
@@ -348,7 +409,8 @@ export default function AppointmentsPage() {
                     <TableCell>
                       <div>
                         <div className="font-medium">
-                          Dr. {appointment.doctor.staff?.firstName} {appointment.doctor.staff?.lastName}
+                          Dr. {appointment.doctor.staff?.firstName}{" "}
+                          {appointment.doctor.staff?.lastName}
                         </div>
                         <div className="text-sm text-muted-foreground">
                           {appointment.doctor.staff?.department}
@@ -357,12 +419,10 @@ export default function AppointmentsPage() {
                     </TableCell>
                     <TableCell>
                       <Badge variant="outline">
-                        {appointment.type.replace('_', ' ')}
+                        {appointment.type.replace("_", " ")}
                       </Badge>
                     </TableCell>
-                    <TableCell>
-                      {getStatusBadge(appointment.status)}
-                    </TableCell>
+                    <TableCell>{getStatusBadge(appointment.status)}</TableCell>
                     <TableCell className="text-right">
                       <div className="flex items-center justify-end gap-2">
                         <Button
@@ -372,18 +432,21 @@ export default function AppointmentsPage() {
                         >
                           <Edit className="h-4 w-4" />
                         </Button>
-                        {appointment.status !== 'CANCELLED' && appointment.status !== 'COMPLETED' && (
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => cancelAppointmentMutation.mutate({ 
-                              id: appointment.id,
-                              reason: 'Cancelled by staff' 
-                            })}
-                          >
-                            <X className="h-4 w-4" />
-                          </Button>
-                        )}
+                        {appointment.status !== "CANCELLED" &&
+                          appointment.status !== "COMPLETED" && (
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() =>
+                                cancelAppointmentMutation.mutate({
+                                  id: appointment.id,
+                                  reason: "Cancelled by staff",
+                                })
+                              }
+                            >
+                              <X className="h-4 w-4" />
+                            </Button>
+                          )}
                       </div>
                     </TableCell>
                   </TableRow>
@@ -395,7 +458,10 @@ export default function AppointmentsPage() {
       </Card>
 
       {/* New Appointment Dialog - This would contain the appointment creation form */}
-      <Dialog open={isNewAppointmentOpen} onOpenChange={setIsNewAppointmentOpen}>
+      <Dialog
+        open={isNewAppointmentOpen}
+        onOpenChange={setIsNewAppointmentOpen}
+      >
         <DialogContent className="max-w-2xl">
           <DialogHeader>
             <DialogTitle>Schedule New Appointment</DialogTitle>
@@ -406,12 +472,16 @@ export default function AppointmentsPage() {
           <div className="text-center py-8">
             <CalendarIcon className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
             <p className="text-muted-foreground">
-              Appointment creation form would be implemented here with patient selection,
-              doctor selection, date/time picker, and appointment type.
+              Appointment creation form would be implemented here with patient
+              selection, doctor selection, date/time picker, and appointment
+              type.
             </p>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setIsNewAppointmentOpen(false)}>
+            <Button
+              variant="outline"
+              onClick={() => setIsNewAppointmentOpen(false)}
+            >
               Cancel
             </Button>
             <Button>Create Appointment</Button>

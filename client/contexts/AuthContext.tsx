@@ -1,6 +1,12 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { api } from '@/lib/api';
-import { toast } from 'sonner';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
+import { api } from "@/lib/api";
+import { toast } from "sonner";
 
 export interface User {
   id: string;
@@ -18,15 +24,15 @@ export interface User {
 }
 
 export enum UserRole {
-  ADMIN = 'ADMIN',
-  DOCTOR = 'DOCTOR',
-  NURSE = 'NURSE',
-  RECEPTIONIST = 'RECEPTIONIST',
-  PHARMACIST = 'PHARMACIST',
-  LAB_TECH = 'LAB_TECH',
-  RADIOLOGIST = 'RADIOLOGIST',
-  FINANCE = 'FINANCE',
-  RESEARCHER = 'RESEARCHER'
+  ADMIN = "ADMIN",
+  DOCTOR = "DOCTOR",
+  NURSE = "NURSE",
+  RECEPTIONIST = "RECEPTIONIST",
+  PHARMACIST = "PHARMACIST",
+  LAB_TECH = "LAB_TECH",
+  RADIOLOGIST = "RADIOLOGIST",
+  FINANCE = "FINANCE",
+  RESEARCHER = "RESEARCHER",
 }
 
 interface AuthContextType {
@@ -54,8 +60,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }, []);
 
   const checkAuthStatus = async () => {
-    const token = localStorage.getItem('auth_token');
-    
+    const token = localStorage.getItem("auth_token");
+
     if (!token) {
       setIsLoading(false);
       return;
@@ -65,8 +71,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       const response = await api.auth.profile();
       setUser(response.user);
     } catch (error) {
-      console.error('Auth check failed:', error);
-      localStorage.removeItem('auth_token');
+      console.error("Auth check failed:", error);
+      localStorage.removeItem("auth_token");
     } finally {
       setIsLoading(false);
     }
@@ -75,26 +81,26 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const login = async (email: string, password: string) => {
     try {
       const response = await api.auth.login({ email, password });
-      
-      localStorage.setItem('auth_token', response.token);
+
+      localStorage.setItem("auth_token", response.token);
       setUser(response.user);
-      
-      toast.success('Login successful');
+
+      toast.success("Login successful");
     } catch (error: any) {
-      toast.error(error.message || 'Login failed');
+      toast.error(error.message || "Login failed");
       throw error;
     }
   };
 
   const logout = () => {
-    localStorage.removeItem('auth_token');
+    localStorage.removeItem("auth_token");
     setUser(null);
-    toast.info('Logged out successfully');
+    toast.info("Logged out successfully");
   };
 
   const hasRole = (roles: UserRole | UserRole[]): boolean => {
     if (!user) return false;
-    
+
     const roleArray = Array.isArray(roles) ? roles : [roles];
     return roleArray.includes(user.role);
   };
@@ -104,74 +110,74 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
     // Define role-based permissions
     const permissions: Record<UserRole, string[]> = {
-      [UserRole.ADMIN]: ['*'], // Admin has all permissions
+      [UserRole.ADMIN]: ["*"], // Admin has all permissions
       [UserRole.DOCTOR]: [
-        'patients.read',
-        'patients.write',
-        'appointments.read',
-        'appointments.write',
-        'prescriptions.write',
-        'lab.request',
-        'radiology.request',
-        'dashboard.read'
+        "patients.read",
+        "patients.write",
+        "appointments.read",
+        "appointments.write",
+        "prescriptions.write",
+        "lab.request",
+        "radiology.request",
+        "dashboard.read",
       ],
       [UserRole.NURSE]: [
-        'patients.read',
-        'patients.write',
-        'appointments.read',
-        'appointments.write',
-        'dashboard.read'
+        "patients.read",
+        "patients.write",
+        "appointments.read",
+        "appointments.write",
+        "dashboard.read",
       ],
       [UserRole.RECEPTIONIST]: [
-        'patients.read',
-        'patients.write',
-        'appointments.read',
-        'appointments.write',
-        'billing.read',
-        'dashboard.read'
+        "patients.read",
+        "patients.write",
+        "appointments.read",
+        "appointments.write",
+        "billing.read",
+        "dashboard.read",
       ],
       [UserRole.PHARMACIST]: [
-        'patients.read',
-        'prescriptions.read',
-        'prescriptions.dispense',
-        'pharmacy.manage',
-        'dashboard.read'
+        "patients.read",
+        "prescriptions.read",
+        "prescriptions.dispense",
+        "pharmacy.manage",
+        "dashboard.read",
       ],
       [UserRole.LAB_TECH]: [
-        'patients.read',
-        'lab.read',
-        'lab.write',
-        'lab.results',
-        'dashboard.read'
+        "patients.read",
+        "lab.read",
+        "lab.write",
+        "lab.results",
+        "dashboard.read",
       ],
       [UserRole.RADIOLOGIST]: [
-        'patients.read',
-        'radiology.read',
-        'radiology.write',
-        'radiology.report',
-        'dashboard.read'
+        "patients.read",
+        "radiology.read",
+        "radiology.write",
+        "radiology.report",
+        "dashboard.read",
       ],
       [UserRole.FINANCE]: [
-        'patients.read',
-        'billing.read',
-        'billing.write',
-        'reports.financial',
-        'dashboard.read'
+        "patients.read",
+        "billing.read",
+        "billing.write",
+        "reports.financial",
+        "dashboard.read",
       ],
       [UserRole.RESEARCHER]: [
-        'patients.read',
-        'research.read',
-        'research.write',
-        'reports.research',
-        'dashboard.read'
-      ]
+        "patients.read",
+        "research.read",
+        "research.write",
+        "reports.research",
+        "dashboard.read",
+      ],
     };
 
     const userPermissions = permissions[user.role] || [];
-    
+
     // Admin has all permissions
-    if (userPermissions.includes('*')) return true;
-    
+    if (userPermissions.includes("*")) return true;
+
     return userPermissions.includes(permission);
   };
 
@@ -182,20 +188,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     login,
     logout,
     hasRole,
-    hasPermission
+    hasPermission,
   };
 
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 };
@@ -212,7 +214,7 @@ export const ProtectedComponent: React.FC<ProtectedComponentProps> = ({
   children,
   roles,
   permissions,
-  fallback = null
+  fallback = null,
 }) => {
   const { hasRole, hasPermission } = useAuth();
 
@@ -223,9 +225,13 @@ export const ProtectedComponent: React.FC<ProtectedComponentProps> = ({
 
   // Check permissions
   if (permissions) {
-    const permissionArray = Array.isArray(permissions) ? permissions : [permissions];
-    const hasRequiredPermissions = permissionArray.every(permission => hasPermission(permission));
-    
+    const permissionArray = Array.isArray(permissions)
+      ? permissions
+      : [permissions];
+    const hasRequiredPermissions = permissionArray.every((permission) =>
+      hasPermission(permission),
+    );
+
     if (!hasRequiredPermissions) {
       return <>{fallback}</>;
     }

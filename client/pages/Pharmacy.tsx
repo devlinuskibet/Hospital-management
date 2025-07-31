@@ -12,7 +12,7 @@ export default function Pharmacy() {
     "Batch tracking and expiry management",
     "Patient medication history",
     "Pharmacy billing and invoicing",
-    "Drug utilization reporting"
+    "Drug utilization reporting",
   ];
 
   return (

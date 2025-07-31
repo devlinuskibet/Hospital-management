@@ -3,7 +3,14 @@ import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { useAuth, UserRole, ProtectedComponent } from "@/contexts/AuthContext";
 import {
   Activity,
@@ -25,7 +32,7 @@ import {
   LogOut,
   User,
   Settings,
-  ChevronDown
+  ChevronDown,
 } from "lucide-react";
 
 const navigation = [
@@ -33,61 +40,85 @@ const navigation = [
     name: "Dashboard",
     href: "/",
     icon: BarChart3,
-    roles: [UserRole.ADMIN, UserRole.DOCTOR, UserRole.NURSE, UserRole.RECEPTIONIST, UserRole.PHARMACIST, UserRole.LAB_TECH, UserRole.RADIOLOGIST, UserRole.FINANCE, UserRole.RESEARCHER]
+    roles: [
+      UserRole.ADMIN,
+      UserRole.DOCTOR,
+      UserRole.NURSE,
+      UserRole.RECEPTIONIST,
+      UserRole.PHARMACIST,
+      UserRole.LAB_TECH,
+      UserRole.RADIOLOGIST,
+      UserRole.FINANCE,
+      UserRole.RESEARCHER,
+    ],
   },
   {
     name: "Patients",
     href: "/patients",
     icon: Users,
-    roles: [UserRole.ADMIN, UserRole.DOCTOR, UserRole.NURSE, UserRole.RECEPTIONIST, UserRole.PHARMACIST, UserRole.LAB_TECH, UserRole.RADIOLOGIST, UserRole.FINANCE]
+    roles: [
+      UserRole.ADMIN,
+      UserRole.DOCTOR,
+      UserRole.NURSE,
+      UserRole.RECEPTIONIST,
+      UserRole.PHARMACIST,
+      UserRole.LAB_TECH,
+      UserRole.RADIOLOGIST,
+      UserRole.FINANCE,
+    ],
   },
   {
     name: "Appointments",
     href: "/appointments",
     icon: Calendar,
-    roles: [UserRole.ADMIN, UserRole.DOCTOR, UserRole.NURSE, UserRole.RECEPTIONIST]
+    roles: [
+      UserRole.ADMIN,
+      UserRole.DOCTOR,
+      UserRole.NURSE,
+      UserRole.RECEPTIONIST,
+    ],
   },
   {
     name: "Pharmacy",
     href: "/pharmacy",
     icon: Pill,
-    roles: [UserRole.ADMIN, UserRole.DOCTOR, UserRole.PHARMACIST]
+    roles: [UserRole.ADMIN, UserRole.DOCTOR, UserRole.PHARMACIST],
   },
   {
     name: "Laboratory",
     href: "/laboratory",
     icon: TestTube,
-    roles: [UserRole.ADMIN, UserRole.DOCTOR, UserRole.LAB_TECH]
+    roles: [UserRole.ADMIN, UserRole.DOCTOR, UserRole.LAB_TECH],
   },
   {
     name: "Radiology",
     href: "/radiology",
     icon: Camera,
-    roles: [UserRole.ADMIN, UserRole.DOCTOR, UserRole.RADIOLOGIST]
+    roles: [UserRole.ADMIN, UserRole.DOCTOR, UserRole.RADIOLOGIST],
   },
   {
     name: "Billing",
     href: "/billing",
     icon: DollarSign,
-    roles: [UserRole.ADMIN, UserRole.FINANCE, UserRole.RECEPTIONIST]
+    roles: [UserRole.ADMIN, UserRole.FINANCE, UserRole.RECEPTIONIST],
   },
   {
     name: "Staff",
     href: "/staff",
     icon: UserCheck,
-    roles: [UserRole.ADMIN]
+    roles: [UserRole.ADMIN],
   },
   {
     name: "Inventory",
     href: "/inventory",
     icon: Package,
-    roles: [UserRole.ADMIN, UserRole.PHARMACIST]
+    roles: [UserRole.ADMIN, UserRole.PHARMACIST],
   },
   {
     name: "Research",
     href: "/research",
     icon: GraduationCap,
-    roles: [UserRole.ADMIN, UserRole.DOCTOR, UserRole.RESEARCHER]
+    roles: [UserRole.ADMIN, UserRole.DOCTOR, UserRole.RESEARCHER],
   },
 ];
 
@@ -103,11 +134,16 @@ export default function Layout({ children }: LayoutProps) {
   return (
     <div className="min-h-screen bg-background">
       {/* Mobile sidebar */}
-      <div className={cn(
-        "fixed inset-0 z-50 lg:hidden",
-        sidebarOpen ? "block" : "hidden"
-      )}>
-        <div className="fixed inset-0 bg-black/50" onClick={() => setSidebarOpen(false)} />
+      <div
+        className={cn(
+          "fixed inset-0 z-50 lg:hidden",
+          sidebarOpen ? "block" : "hidden",
+        )}
+      >
+        <div
+          className="fixed inset-0 bg-black/50"
+          onClick={() => setSidebarOpen(false)}
+        />
         <div className="fixed left-0 top-0 h-full w-64 bg-sidebar">
           <SidebarContent onNavigate={() => setSidebarOpen(false)} />
         </div>
@@ -155,7 +191,9 @@ export default function Layout({ children }: LayoutProps) {
                     </div>
                     <div className="hidden sm:block text-left">
                       <div className="text-sm font-medium">
-                        {user?.staff ? `${user.staff.firstName} ${user.staff.lastName}` : user?.email}
+                        {user?.staff
+                          ? `${user.staff.firstName} ${user.staff.lastName}`
+                          : user?.email}
                       </div>
                       <div className="text-xs text-muted-foreground">
                         {user?.staff?.position || user?.role}
@@ -168,7 +206,9 @@ export default function Layout({ children }: LayoutProps) {
                   <DropdownMenuLabel>
                     <div className="space-y-1">
                       <p className="text-sm font-medium">
-                        {user?.staff ? `${user.staff.firstName} ${user.staff.lastName}` : 'User'}
+                        {user?.staff
+                          ? `${user.staff.firstName} ${user.staff.lastName}`
+                          : "User"}
                       </p>
                       <div className="flex items-center gap-2">
                         <Badge variant="secondary" className="text-xs">
@@ -210,9 +250,7 @@ export default function Layout({ children }: LayoutProps) {
         </header>
 
         {/* Page content */}
-        <main className="p-4 lg:p-6">
-          {children}
-        </main>
+        <main className="p-4 lg:p-6">{children}</main>
       </div>
     </div>
   );
@@ -232,7 +270,9 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
           </div>
           <div>
             <h1 className="font-bold text-lg">KUTRRH</h1>
-            <p className="text-xs text-sidebar-foreground/70">Hospital Management</p>
+            <p className="text-xs text-sidebar-foreground/70">
+              Hospital Management
+            </p>
           </div>
         </div>
       </div>
@@ -240,7 +280,7 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
       {/* Navigation */}
       <nav className="flex-1 p-4 space-y-2">
         {navigation
-          .filter(item => !item.roles || hasRole(item.roles))
+          .filter((item) => !item.roles || hasRole(item.roles))
           .map((item) => {
             const isActive = location.pathname === item.href;
             return (
@@ -252,7 +292,7 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
                   "flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors",
                   isActive
                     ? "bg-sidebar-accent text-sidebar-accent-foreground"
-                    : "text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground"
+                    : "text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground",
                 )}
               >
                 <item.icon className="h-4 w-4" />

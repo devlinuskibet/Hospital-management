@@ -12,7 +12,7 @@ export default function Appointments() {
     "Consultation workflow management",
     "Follow-up appointment scheduling",
     "Multi-department appointment coordination",
-    "Real-time appointment status updates"
+    "Real-time appointment status updates",
   ];
 
   return (

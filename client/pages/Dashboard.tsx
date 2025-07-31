@@ -1,5 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
@@ -21,7 +27,7 @@ import {
   CheckCircle,
   Bed,
   Stethoscope,
-  RefreshCw
+  RefreshCw,
 } from "lucide-react";
 
 export default function Dashboard() {
@@ -30,36 +36,27 @@ export default function Dashboard() {
     data: statsData,
     isLoading: statsLoading,
     error: statsError,
-    refetch: refetchStats
+    refetch: refetchStats,
   } = useQuery({
-    queryKey: ['dashboard', 'stats'],
+    queryKey: ["dashboard", "stats"],
     queryFn: () => api.dashboard.stats(),
     refetchInterval: 30000, // Refetch every 30 seconds
   });
 
-  const {
-    data: activitiesData,
-    isLoading: activitiesLoading
-  } = useQuery({
-    queryKey: ['dashboard', 'activities'],
+  const { data: activitiesData, isLoading: activitiesLoading } = useQuery({
+    queryKey: ["dashboard", "activities"],
     queryFn: () => api.dashboard.activities(),
     refetchInterval: 10000, // Refetch every 10 seconds
   });
 
-  const {
-    data: departmentsData,
-    isLoading: departmentsLoading
-  } = useQuery({
-    queryKey: ['dashboard', 'departments'],
+  const { data: departmentsData, isLoading: departmentsLoading } = useQuery({
+    queryKey: ["dashboard", "departments"],
     queryFn: () => api.dashboard.departments(),
     refetchInterval: 60000, // Refetch every minute
   });
 
-  const {
-    data: alertsData,
-    isLoading: alertsLoading
-  } = useQuery({
-    queryKey: ['dashboard', 'alerts'],
+  const { data: alertsData, isLoading: alertsLoading } = useQuery({
+    queryKey: ["dashboard", "alerts"],
     queryFn: () => api.dashboard.alerts(),
     refetchInterval: 5000, // Refetch every 5 seconds for critical alerts
   });
@@ -78,12 +75,18 @@ export default function Dashboard() {
       <CardContent>
         <div className="text-2xl font-bold">{stat.value}</div>
         <div className="flex items-center gap-1 text-xs text-muted-foreground">
-          {stat.changeType === 'increase' ? (
+          {stat.changeType === "increase" ? (
             <TrendingUp className="h-3 w-3 text-success-600" />
           ) : (
             <TrendingDown className="h-3 w-3 text-danger-600" />
           )}
-          <span className={stat.changeType === 'increase' ? 'text-success-600' : 'text-danger-600'}>
+          <span
+            className={
+              stat.changeType === "increase"
+                ? "text-success-600"
+                : "text-danger-600"
+            }
+          >
             {stat.change}
           </span>
           <span>from last month</span>
@@ -94,10 +97,10 @@ export default function Dashboard() {
   );
 
   const getIconForStat = (title: string) => {
-    if (title.includes('Patient')) return Users;
-    if (title.includes('Appointment')) return Calendar;
-    if (title.includes('Bed')) return Bed;
-    if (title.includes('Revenue')) return DollarSign;
+    if (title.includes("Patient")) return Users;
+    if (title.includes("Appointment")) return Calendar;
+    if (title.includes("Bed")) return Bed;
+    if (title.includes("Revenue")) return DollarSign;
     return Activity;
   };
 
@@ -152,57 +155,66 @@ export default function Dashboard() {
             </div>
           </CardContent>
         </Card>
-      ) : alerts.length > 0 && (
-        <Card className="border-warning-200 bg-warning-50">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-warning-800 flex items-center gap-2">
-              <AlertTriangle className="h-5 w-5" />
-              Critical Alerts ({alerts.length})
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            {alerts.map((alert: any) => (
-              <div key={alert.id} className="flex items-center justify-between p-3 bg-white rounded-lg border">
-                <div className="flex items-center gap-3">
-                  <div className={`h-2 w-2 rounded-full ${
-                    alert.type === 'critical' ? 'bg-danger-500' :
-                    alert.type === 'warning' ? 'bg-warning-500' :
-                    'bg-medical-500'
-                  }`} />
-                  <span className="text-sm font-medium">{alert.message}</span>
+      ) : (
+        alerts.length > 0 && (
+          <Card className="border-warning-200 bg-warning-50">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-warning-800 flex items-center gap-2">
+                <AlertTriangle className="h-5 w-5" />
+                Critical Alerts ({alerts.length})
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              {alerts.map((alert: any) => (
+                <div
+                  key={alert.id}
+                  className="flex items-center justify-between p-3 bg-white rounded-lg border"
+                >
+                  <div className="flex items-center gap-3">
+                    <div
+                      className={`h-2 w-2 rounded-full ${
+                        alert.type === "critical"
+                          ? "bg-danger-500"
+                          : alert.type === "warning"
+                            ? "bg-warning-500"
+                            : "bg-medical-500"
+                      }`}
+                    />
+                    <span className="text-sm font-medium">{alert.message}</span>
+                  </div>
+                  <span className="text-xs text-muted-foreground">
+                    {alert.time}
+                  </span>
                 </div>
-                <span className="text-xs text-muted-foreground">{alert.time}</span>
-              </div>
-            ))}
-          </CardContent>
-        </Card>
+              ))}
+            </CardContent>
+          </Card>
+        )
       )}
 
       {/* Key Statistics */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {statsLoading ? (
-          Array.from({ length: 4 }).map((_, i) => (
-            <Card key={i}>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <Skeleton className="h-4 w-24" />
-                <Skeleton className="h-4 w-4 rounded" />
-              </CardHeader>
-              <CardContent>
-                <Skeleton className="h-8 w-20 mb-2" />
-                <Skeleton className="h-4 w-32 mb-1" />
-                <Skeleton className="h-3 w-40" />
-              </CardContent>
-            </Card>
-          ))
-        ) : (
-          stats.map((stat: any) => (
-            <StatCard
-              key={stat.title}
-              stat={stat}
-              icon={getIconForStat(stat.title)}
-            />
-          ))
-        )}
+        {statsLoading
+          ? Array.from({ length: 4 }).map((_, i) => (
+              <Card key={i}>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <Skeleton className="h-4 w-24" />
+                  <Skeleton className="h-4 w-4 rounded" />
+                </CardHeader>
+                <CardContent>
+                  <Skeleton className="h-8 w-20 mb-2" />
+                  <Skeleton className="h-4 w-32 mb-1" />
+                  <Skeleton className="h-3 w-40" />
+                </CardContent>
+              </Card>
+            ))
+          : stats.map((stat: any) => (
+              <StatCard
+                key={stat.title}
+                stat={stat}
+                icon={getIconForStat(stat.title)}
+              />
+            ))}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -210,36 +222,36 @@ export default function Dashboard() {
         <Card>
           <CardHeader>
             <CardTitle>Department Utilization</CardTitle>
-            <CardDescription>Current patient load by department</CardDescription>
+            <CardDescription>
+              Current patient load by department
+            </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            {departmentsLoading ? (
-              Array.from({ length: 5 }).map((_, i) => (
-                <div key={i} className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <Skeleton className="h-4 w-20" />
-                    <Skeleton className="h-4 w-16" />
+            {departmentsLoading
+              ? Array.from({ length: 5 }).map((_, i) => (
+                  <div key={i} className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <Skeleton className="h-4 w-20" />
+                      <Skeleton className="h-4 w-16" />
+                    </div>
+                    <Skeleton className="h-2 w-full" />
+                    <Skeleton className="h-3 w-12 ml-auto" />
                   </div>
-                  <Skeleton className="h-2 w-full" />
-                  <Skeleton className="h-3 w-12 ml-auto" />
-                </div>
-              ))
-            ) : (
-              departments.map((dept: any) => (
-                <div key={dept.name} className="space-y-2">
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="font-medium">{dept.name}</span>
-                    <span className="text-muted-foreground">
-                      {dept.patients}/{dept.capacity} patients
-                    </span>
+                ))
+              : departments.map((dept: any) => (
+                  <div key={dept.name} className="space-y-2">
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="font-medium">{dept.name}</span>
+                      <span className="text-muted-foreground">
+                        {dept.patients}/{dept.capacity} patients
+                      </span>
+                    </div>
+                    <Progress value={dept.utilization} className="h-2" />
+                    <div className="text-right text-xs text-muted-foreground">
+                      {dept.utilization}% capacity
+                    </div>
                   </div>
-                  <Progress value={dept.utilization} className="h-2" />
-                  <div className="text-right text-xs text-muted-foreground">
-                    {dept.utilization}% capacity
-                  </div>
-                </div>
-              ))
-            )}
+                ))}
           </CardContent>
         </Card>
 
@@ -247,52 +259,75 @@ export default function Dashboard() {
         <Card>
           <CardHeader>
             <CardTitle>Recent Activities</CardTitle>
-            <CardDescription>Latest patient activities and updates</CardDescription>
+            <CardDescription>
+              Latest patient activities and updates
+            </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            {activitiesLoading ? (
-              Array.from({ length: 4 }).map((_, i) => (
-                <div key={i} className="flex items-center gap-4 p-3 border rounded-lg">
-                  <Skeleton className="h-4 w-4 rounded" />
-                  <div className="flex-1 space-y-1">
-                    <Skeleton className="h-4 w-32" />
-                    <Skeleton className="h-3 w-24" />
-                  </div>
-                  <Skeleton className="h-6 w-16" />
-                </div>
-              ))
-            ) : (
-              activities.map((activity: any) => (
-                <div key={activity.id} className="flex items-center gap-4 p-3 border rounded-lg">
-                  <div className="flex-shrink-0">
-                    {activity.type === 'appointment' && <Calendar className="h-4 w-4 text-medical-600" />}
-                    {activity.type === 'admission' && <UserPlus className="h-4 w-4 text-medical-600" />}
-                    {activity.type === 'discharge' && <CheckCircle className="h-4 w-4 text-success-600" />}
-                    {activity.type === 'lab_result' && <TestTube className="h-4 w-4 text-warning-600" />}
-                    {activity.type === 'prescription' && <Pill className="h-4 w-4 text-primary" />}
-                    {activity.type === 'surgery' && <Stethoscope className="h-4 w-4 text-primary" />}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-foreground">
-                      {activity.patient}
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      {activity.department} • {activity.time}
-                    </p>
-                  </div>
-                  <Badge
-                    variant={
-                      activity.status === 'urgent' || activity.status === 'critical' ? 'destructive' :
-                      activity.status === 'completed' || activity.status === 'scheduled' ? 'default' :
-                      activity.status === 'in_progress' ? 'secondary' :
-                      'outline'
-                    }
+            {activitiesLoading
+              ? Array.from({ length: 4 }).map((_, i) => (
+                  <div
+                    key={i}
+                    className="flex items-center gap-4 p-3 border rounded-lg"
                   >
-                    {activity.status.replace('_', ' ')}
-                  </Badge>
-                </div>
-              ))
-            )}
+                    <Skeleton className="h-4 w-4 rounded" />
+                    <div className="flex-1 space-y-1">
+                      <Skeleton className="h-4 w-32" />
+                      <Skeleton className="h-3 w-24" />
+                    </div>
+                    <Skeleton className="h-6 w-16" />
+                  </div>
+                ))
+              : activities.map((activity: any) => (
+                  <div
+                    key={activity.id}
+                    className="flex items-center gap-4 p-3 border rounded-lg"
+                  >
+                    <div className="flex-shrink-0">
+                      {activity.type === "appointment" && (
+                        <Calendar className="h-4 w-4 text-medical-600" />
+                      )}
+                      {activity.type === "admission" && (
+                        <UserPlus className="h-4 w-4 text-medical-600" />
+                      )}
+                      {activity.type === "discharge" && (
+                        <CheckCircle className="h-4 w-4 text-success-600" />
+                      )}
+                      {activity.type === "lab_result" && (
+                        <TestTube className="h-4 w-4 text-warning-600" />
+                      )}
+                      {activity.type === "prescription" && (
+                        <Pill className="h-4 w-4 text-primary" />
+                      )}
+                      {activity.type === "surgery" && (
+                        <Stethoscope className="h-4 w-4 text-primary" />
+                      )}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium text-foreground">
+                        {activity.patient}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        {activity.department} • {activity.time}
+                      </p>
+                    </div>
+                    <Badge
+                      variant={
+                        activity.status === "urgent" ||
+                        activity.status === "critical"
+                          ? "destructive"
+                          : activity.status === "completed" ||
+                              activity.status === "scheduled"
+                            ? "default"
+                            : activity.status === "in_progress"
+                              ? "secondary"
+                              : "outline"
+                      }
+                    >
+                      {activity.status.replace("_", " ")}
+                    </Badge>
+                  </div>
+                ))}
           </CardContent>
         </Card>
       </div>
@@ -301,7 +336,9 @@ export default function Dashboard() {
       <Card>
         <CardHeader>
           <CardTitle>Quick Actions</CardTitle>
-          <CardDescription>Commonly used functions and shortcuts</CardDescription>
+          <CardDescription>
+            Commonly used functions and shortcuts
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">

@@ -12,7 +12,7 @@ export default function Laboratory() {
     "Reference lab coordination",
     "Laboratory billing and claims",
     "Test history and trending",
-    "Laboratory analytics and reporting"
+    "Laboratory analytics and reporting",
   ];
 
   return (

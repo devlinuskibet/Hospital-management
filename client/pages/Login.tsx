@@ -1,21 +1,27 @@
-import { useState } from 'react';
-import { Navigate } from 'react-router-dom';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Separator } from '@/components/ui/separator';
-import { Badge } from '@/components/ui/badge';
-import { useAuth } from '@/contexts/AuthContext';
-import { Heart, Mail, Lock, AlertCircle, Users, Shield } from 'lucide-react';
+import { useState } from "react";
+import { Navigate } from "react-router-dom";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Separator } from "@/components/ui/separator";
+import { Badge } from "@/components/ui/badge";
+import { useAuth } from "@/contexts/AuthContext";
+import { Heart, Mail, Lock, AlertCircle, Users, Shield } from "lucide-react";
 
 export default function Login() {
   const { login, isAuthenticated, isLoading } = useAuth();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   // Redirect if already authenticated
   if (isAuthenticated) {
@@ -25,22 +31,42 @@ export default function Login() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    setError('');
+    setError("");
 
     try {
       await login(email, password);
     } catch (err: any) {
-      setError(err.message || 'Login failed. Please try again.');
+      setError(err.message || "Login failed. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
   };
 
   const demoAccounts = [
-    { role: 'Admin', email: 'admin@kutrrh.go.ke', password: 'admin123', color: 'bg-red-100 text-red-800' },
-    { role: 'Doctor', email: 'dr.kamau@kutrrh.go.ke', password: 'doctor123', color: 'bg-blue-100 text-blue-800' },
-    { role: 'Nurse', email: 'nurse.akinyi@kutrrh.go.ke', password: 'nurse123', color: 'bg-green-100 text-green-800' },
-    { role: 'Receptionist', email: 'reception@kutrrh.go.ke', password: 'reception123', color: 'bg-purple-100 text-purple-800' }
+    {
+      role: "Admin",
+      email: "admin@kutrrh.go.ke",
+      password: "admin123",
+      color: "bg-red-100 text-red-800",
+    },
+    {
+      role: "Doctor",
+      email: "dr.kamau@kutrrh.go.ke",
+      password: "doctor123",
+      color: "bg-blue-100 text-blue-800",
+    },
+    {
+      role: "Nurse",
+      email: "nurse.akinyi@kutrrh.go.ke",
+      password: "nurse123",
+      color: "bg-green-100 text-green-800",
+    },
+    {
+      role: "Receptionist",
+      email: "reception@kutrrh.go.ke",
+      password: "reception123",
+      color: "bg-purple-100 text-purple-800",
+    },
   ];
 
   if (isLoading) {
@@ -62,11 +88,17 @@ export default function Login() {
             </div>
             <div>
               <h1 className="text-2xl font-bold text-foreground">KUTRRH</h1>
-              <p className="text-sm text-muted-foreground">Hospital Management System</p>
+              <p className="text-sm text-muted-foreground">
+                Hospital Management System
+              </p>
             </div>
           </div>
-          <h2 className="text-xl font-semibold text-foreground">Welcome Back</h2>
-          <p className="text-muted-foreground">Sign in to access your dashboard</p>
+          <h2 className="text-xl font-semibold text-foreground">
+            Welcome Back
+          </h2>
+          <p className="text-muted-foreground">
+            Sign in to access your dashboard
+          </p>
         </div>
 
         {/* Login Form */}
@@ -121,18 +153,14 @@ export default function Login() {
                 </div>
               </div>
 
-              <Button 
-                type="submit" 
-                className="w-full" 
-                disabled={isSubmitting}
-              >
+              <Button type="submit" className="w-full" disabled={isSubmitting}>
                 {isSubmitting ? (
                   <>
                     <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
                     Signing In...
                   </>
                 ) : (
-                  'Sign In'
+                  "Sign In"
                 )}
               </Button>
             </form>
@@ -162,7 +190,10 @@ export default function Login() {
                   className="p-3 text-left border rounded-lg hover:bg-muted/50 transition-colors"
                 >
                   <div className="space-y-1">
-                    <Badge variant="secondary" className={`text-xs ${account.color}`}>
+                    <Badge
+                      variant="secondary"
+                      className={`text-xs ${account.color}`}
+                    >
                       {account.role}
                     </Badge>
                     <p className="text-xs font-medium">{account.email}</p>

@@ -1,4 +1,10 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Construction, ArrowLeft, MessageCircle } from "lucide-react";
@@ -12,12 +18,12 @@ interface PlaceholderPageProps {
   comingSoon?: boolean;
 }
 
-export default function PlaceholderPage({ 
-  title, 
-  description, 
-  icon: Icon, 
+export default function PlaceholderPage({
+  title,
+  description,
+  icon: Icon,
   features = [],
-  comingSoon = true 
+  comingSoon = true,
 }: PlaceholderPageProps) {
   return (
     <div className="space-y-6">
@@ -58,7 +64,8 @@ export default function PlaceholderPage({
                 Module Overview
               </CardTitle>
               <CardDescription>
-                This module is currently under development as part of the comprehensive KUTRRH Hospital Management System.
+                This module is currently under development as part of the
+                comprehensive KUTRRH Hospital Management System.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -67,7 +74,8 @@ export default function PlaceholderPage({
                 <div>
                   <h3 className="font-semibold text-lg">Under Development</h3>
                   <p className="text-muted-foreground">
-                    This module is being built to provide comprehensive functionality for {title.toLowerCase()}.
+                    This module is being built to provide comprehensive
+                    functionality for {title.toLowerCase()}.
                   </p>
                 </div>
               </div>

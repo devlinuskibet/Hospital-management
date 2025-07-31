@@ -1,33 +1,33 @@
-import { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Heart } from 'lucide-react';
+import { useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Heart } from "lucide-react";
 
 export default function SimpleLogin() {
-  const [email, setEmail] = useState('admin@kutrrh.go.ke');
-  const [password, setPassword] = useState('admin123');
+  const [email, setEmail] = useState("admin@kutrrh.go.ke");
+  const [password, setPassword] = useState("admin123");
 
   const handleLogin = async () => {
     try {
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
       });
-      
+
       const data = await response.json();
-      console.log('Login response:', data);
-      
+      console.log("Login response:", data);
+
       if (response.ok) {
-        localStorage.setItem('auth_token', data.token);
-        window.location.href = '/dashboard';
+        localStorage.setItem("auth_token", data.token);
+        window.location.href = "/dashboard";
       } else {
-        alert('Login failed: ' + data.error);
+        alert("Login failed: " + data.error);
       }
     } catch (error) {
-      console.error('Login error:', error);
-      alert('Login failed');
+      console.error("Login error:", error);
+      alert("Login failed");
     }
   };
 
@@ -41,7 +41,9 @@ export default function SimpleLogin() {
             </div>
             <div>
               <h1 className="text-2xl font-bold">KUTRRH</h1>
-              <p className="text-sm text-muted-foreground">Hospital Management</p>
+              <p className="text-sm text-muted-foreground">
+                Hospital Management
+              </p>
             </div>
           </div>
         </CardHeader>
